@@ -51,16 +51,24 @@ const TodoList = () => {
       setError(err);
     }
   };
-  const handleDeleteTodo = async (id) => {
+  const handleDeleteTodo = async (todo) => {
     try {
-      await deleteTodo(id);
-      setTodos(todos.filter((t) => t.id !== id));
+      await deleteTodo(todo._id);
+      setTodos(todos.filter((t) => t._id !== todo._id));
     } catch (err) {
       setError(err);
+      console.log(err);
     }
   };
+  const countCompletedTodos = () => {
+    return todos.filter((todo) => todo.completed).length;
+  };
+
+  const countTodos = () => {
+    return todos.length;
+  };
   if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error.message}</div>;
+  if (error) return <div>Error: {error.message} </div>;
   return (
     <div className="container mx-auto h-screen border-2 border-black p-5">
       <div className="header m-5 border-2 h-[10vh] items-center flex justify-center">
@@ -83,12 +91,16 @@ const TodoList = () => {
           Add
         </button>
       </div>
-
+      <div className="flex justify-center">
+        <p>
+          Đã hoàn thành: {countCompletedTodos()}/ {countTodos()} công việc
+        </p>
+      </div>
       {/* ✅ Danh sách Todo */}
       <ul>
         {todos.map((todo) => (
           <li
-            key={todo.id}
+            key={todo._id}
             className="flex justify-between items-center border-b py-2"
           >
             <span
@@ -100,7 +112,7 @@ const TodoList = () => {
               {todo.text}
             </span>
             <button
-              onClick={() => handleDeleteTodo(todo.id)}
+              onClick={() => handleDeleteTodo(todo)}
               className="bg-red-500 text-white px-3 py-1 rounded"
             >
               Delete
