@@ -163,9 +163,9 @@ const TodoList = () => {
             onChange={(e) => setFilter(e.target.value)}
             className="todo-stats "
           >
-            <option value="all">Tất cả</option>
-            <option value="completed">Hoàn thành</option>
-            <option value="incomplete">Chưa hoàn thành</option>
+            <option value="all">All Jobs</option>
+            <option value="completed">Completed Jobs</option>
+            <option value="incomplete">Incomplete Jobs</option>
           </select>
         </div>
       </div>
