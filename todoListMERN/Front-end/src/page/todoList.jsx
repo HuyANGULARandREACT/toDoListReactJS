@@ -12,6 +12,7 @@ const TodoList = () => {
   const [error, setError] = React.useState(null);
 
   const [newTodo, setNewTodo] = React.useState("");
+  const [filter, setFilter] = React.useState("all");
   useEffect(() => {
     fetchTodo();
   }, []);
@@ -67,6 +68,14 @@ const TodoList = () => {
   const countTodos = () => {
     return todos.length;
   };
+  const filteredTodos = () => {
+    if (filter === "completed") {
+      return todos.filter((todo) => todo.completed);
+    } else if (filter === "incomplete") {
+      return todos.filter((todo) => !todo.completed);
+    }
+    return todos;
+  };
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message} </div>;
   return (
@@ -76,7 +85,7 @@ const TodoList = () => {
       </div>
 
       {/* ✅ Form thêm Todo */}
-      <div className="flex gap-2 mb-5">
+      <div className="flex gap-2 m-5">
         <input
           type="text"
           value={newTodo}
@@ -91,35 +100,51 @@ const TodoList = () => {
           Add
         </button>
       </div>
-      <div className="flex justify-center">
+      <div className="flex justify-between items-center m-5">
         <p>
-          Đã hoàn thành: {countCompletedTodos()}/ {countTodos()} công việc
+          Đã hoàn thành: {todos.filter((todo) => todo.completed).length}/
+          {todos.length} công việc
         </p>
+        <select
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+          className="border px-3 py-2"
+        >
+          <option value="all">Tất cả</option>
+          <option value="completed">Hoàn thành</option>
+          <option value="incomplete">Chưa hoàn thành</option>
+        </select>
       </div>
       {/* ✅ Danh sách Todo */}
-      <ul>
-        {todos.map((todo) => (
-          <li
-            key={todo._id}
-            className="flex justify-between items-center border-b py-2"
-          >
-            <span
-              onClick={() => handleToggleComplete(todo)}
-              className={`cursor-pointer ${
-                todo.completed ? "line-through text-gray-500" : ""
-              }`}
+      <div className="m-5 border-2 p-5 h-[60vh] overflow-y-auto">
+        <ul>
+          {filteredTodos().map((todo) => (
+            <li
+              key={todo._id}
+              className="flex justify-between items-center border-b py-2"
             >
-              {todo.text}
-            </span>
-            <button
-              onClick={() => handleDeleteTodo(todo)}
-              className="bg-red-500 text-white px-3 py-1 rounded"
-            >
-              Delete
-            </button>
-          </li>
-        ))}
-      </ul>
+              <input
+                type="checkbox"
+                className="size-7 "
+                onClick={() => handleToggleComplete(todo)}
+              />
+              <span
+                className={`cursor-pointer ${
+                  todo.completed ? "line-through text-gray-500" : ""
+                }`}
+              >
+                {todo.text}
+              </span>
+              <button
+                onClick={() => handleDeleteTodo(todo)}
+                className="bg-red-500 text-white px-3 py-1 rounded"
+              >
+                Delete
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };
